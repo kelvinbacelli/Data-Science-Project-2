@@ -17,6 +17,28 @@ Note: Brief intro and your main question go in this space. You may edit the head
 
 # Data Description and Processing
 
+This data set is frequently taken from publicly accessible health insurance expense information on individuals with health insurance.
+
+This data set contains descriptions of the individuals as well as how much they are charged for their insurance.\
+Outcomes: \
+charges: The medical insurance cost that the individual get charged. \
+Descriptors:\
+age: The age of the individual.\
+sex: The sex of the individual.\
+bmi: The body mass index of the individual that measures if they are at a health weight when considering height.\
+children: The amount of children that the individual has.\
+smoker: Either true or false of if the individual is a smoker.\
+region: The area that the individual is located in.
+
+This data set was checked for missing values. Of the original 1338 rows, only 3 of them contianed missing values. After the removal of those rows, we are left with 1335 for examination.
+
+```{r echo=FALSE, include=FALSE}
+data.df <- read.csv("insurance.csv")
+data.df <- na.omit(data.df)
+data.df$smoker <- factor(data.df$smoker)
+data.df$region <- factor(data.df$region)
+```
+
 
 # Data Exploration
 
