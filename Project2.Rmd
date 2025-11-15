@@ -8,7 +8,8 @@ output:
 ---
 ```{r echo=FALSE, include=FALSE, message=FALSE}
 # all library load statements here
-
+library(caret)
+library(knitr)
 r.version <- "4.3.2"
 seed.val <- 123456
 ```
@@ -30,18 +31,115 @@ children: The amount of children that the individual has.\
 smoker: Either true or false of if the individual is a smoker.\
 region: The area that the individual is located in.
 
-This data set was checked for missing values. Of the original 1338 rows, only 3 of them contianed missing values. After the removal of those rows, we are left with 1335 for examination.
+This data set was checked for missing values. Of the original 1338 rows, only 3 of them contained missing values. After the removal of those rows, we are left with 1335 for examination.
 
 ```{r echo=FALSE, include=FALSE}
 data.df <- read.csv("insurance.csv")
 data.df <- na.omit(data.df)
 data.df$smoker <- factor(data.df$smoker)
 data.df$region <- factor(data.df$region)
+data.df$sex <- factor(data.df$sex)
 ```
 
 
 # Data Exploration
 
+This dataset contains observations on health insurance costs for smokers as well as non-smokers. Since smoking is likely to influence insurance costs, we compare the number of smokers vs non-smokers. The distribution shows that most people are non-smokers(~80%).
+
+\newpage
+
+```{r echo=FALSE}
+label = c("non-smoker","smoker")
+count = c("1062","273")
+owner.tbl <- cbind(label,count)
+kable(owner.tbl, caption = "Smoker Comparison")
+```
+
+We also explored the distribution of our outcome variable, charges, to understand the overall spread of health insurance costs in the dataset. The distribution is heavily right-skewed, indicating that while most people pay relatively low premiums, a small number of people pay very high premiums.
+
+
+```{r echo=FALSE, out.width="60%", out.height="40%", fig.align = 'center', fig.cap="Selling Price (US dollars)."}
+hist(data.df$charges, freq = FALSE, main = "", xlab = "Value",ylab = "Density")
+
+lines(density(data.df$charges),col = "red",lwd=2)
+```
+
+
+
+```{r echo=FALSE}
+# table of descriptive stats for the overall life expectancy
+Statistics <- c("Min", "Mean","Median","StdDev","Max")
+mn<-min(data.df$charges)
+mx<-max(data.df$charges)
+avg<-round(mean(data.df$charges), 2)
+md<-median(data.df$charges)
+std<-round(sd(data.df$charges), 2)
+Value <- c(mn,avg,md,std,mx)
+st.tbl <- cbind(Statistics, Value)
+kable(st.tbl, caption="Overall Premiums Statistics")
+```
+
+
+Due to the fact that the original charges variable was highly right-skewed, we applied the natural logarithm to the graph in order to make the distribution more symmetric. This helps stabilize the variance and makes the data more suitable for statistical modeling techniques (which assume approximately normal residuals). Because the natural log scale is exponential, each one-unit increase in log(selling price) corresponds to roughly a 2.7x increase in the actual selling price, meaning values from 10 to 11 represent about a 2.7 times increase, and from 11 to 12 another 2.7 times increase.
+
+```{r echo=FALSE, out.width="60%", out.height="40%", fig.align = 'center', fig.cap="Selling Price (US dollars)."}
+
+hist(log(data.df$charges), freq = FALSE, main = "", xlab = "Log(charges)",ylab = "Density")
+
+lines(density(log(data.df$charges)),col = "red",lwd=2)
+```
+
+
+We created a boxplot of the log-transformed charges across the two categories to explore how smoking affects health insurance costs. As shown in the plot, if a person smokes, the mean insurance cost is significantly higher, indicating that people who smoke pay much higher premiums than those who don't.
+
+```{r echo=FALSE, out.width="60%", out.height="40%", fig.align = 'center', fig.cap="Selling Price by Ownership Level."}
+#data.df$smoker <- trimws(data.df$smoker)  # remove any stray spaces
+
+#data.df$smoker <- factor(data.df$smoker,levels = c("no", "yes"))
+
+par(mar = c(8,4,4,2))
+boxplot(log(charges)~smoker,data = data.df,main="",ylab = "Log(charges)", xlab = "Smoker Category", las=1,cex.axis=0.8)
+
+```
+
+
+```{r echo=FALSE, include=FALSE}
+first.df  <- subset(data.df, smoker == "no")
+second.df <- subset(data.df, smoker == "yes")
+```
+
+```{r echo=FALSE}
+# table of descriptive stats for the overall life expectancy
+statistics <- c("Min", "Mean","Median","StdDev","Max")
+#developed
+data1<-first.df$charges
+mn1<-min(data1)
+mx1<-max(data1)
+avg1<-round(mean(data1), 2)
+md1<-median(data1)
+std1<-round(sd(data1), 2)
+first <- c(mn1,avg1,md1,std1,mx1)
+#developing
+data2<-second.df$charges
+mn2<-min(data2)
+mx2<-max(data2)
+avg2<-round(mean(data2), 2)
+md2<-median(data2)
+std2<-round(sd(data2), 2)
+second <- c(mn2,avg2,md2,std2,mx2)
+
+
+tble.df<- data.frame(statistics, nonsmokers = first, smokers = second)
+kable(tble.df, caption="Premiums for smokers vs non-smokers")
+
+```
+
+
+A t-test was conducted to test whether mean log(charges) differed across smoking categories. The results were highly significant (p-value < 0.05), meaning that the difference between the means of the two groups is unlikely to be due to chance.
+
+```{r echo=FALSE, include=FALSE} 
+t.test(log(charges)~smoker, data = data.df)
+```
 
 # Modeling 
 
