@@ -160,16 +160,16 @@ coef.vals <- coef(summary(fit.step))
 kable(coef.vals)
 ```
 
-We can see that of the predictor variables, age, bmi, children, and yes to being a smoker are all highly significant, with different regions being slightly significant but not by much. With all of our predictors, the adjusted R squared value came to 0.7505, meaning that just over 75% of the variation in the data can be explained by the predictors included in our model. 
+We can see that of the predictor variables, age, bmi, children, and yes to being a smoker are all highly significant, with different regions being slightly significant but not by much. With all of our predictors, the adjusted R squared value came to 0.7506, meaning that just over 75% of the variation in the data can be explained by the predictors included in our model. 
 
 We can use a histogram and a QQ plot to show the distribution of our residuals, which measure our fit's errors.
 ```{r echo=FALSE, out.width="60%", out.height="40%", fig.align = 'center', fig.cap="Distribution of Residuals: Model 1."}
 par(mfrow=c(1,2))
-hist(fit1$residuals, freq = FALSE, main = "", xlab = "Residuals") 
-lines(density(fit1$residuals))
+hist(fit.step$residuals, freq = FALSE, main = "", xlab = "Residuals") 
+lines(density(fit.step$residuals))
 
-qqnorm(y=fit1$residuals, main = "")
-qqline(y=fit1$residuals, datax = FALSE)
+qqnorm(y=fit.step$residuals, main = "")
+qqline(y=fit.step$residuals, datax = FALSE)
 ```
 
 We can see a slightly normal distribution of residuals around 0, with our density curve showing some weight to the left and right of 0. We can also see that the histogram has a heavy tail to the right of our center mass. This same pattern is able to be seen in the QQ plot, as to the left and right of 0, our residuals stray off of the line of normality, with a tail straying far off on the far right.
