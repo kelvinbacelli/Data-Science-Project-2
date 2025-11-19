@@ -141,11 +141,12 @@ A t-test was conducted to test whether mean log(charges) differed across smoking
 t.test(log(charges)~smoker, data = data.df)
 ```
 
-# Modeling 
-
+# Modeling the effect of Characteristics on Insurance Costs
+What will the impacts on insurance charges be based of an individuals characteristics?
+Our dataset contains descriptive information about each person as well as the total cost they are charged for their health insurance. The variables are both personal characteristics and personal choices that may influence certain health risks. Some variables capture biological factors such as age or an individual's body mass index, while others describe behaviors or circumstances, like whether the individual smokes or the number of children that an individual has, that could potentially increase or decrease expected medical costs. Understanding how each factor relates to charges can help show how much lower or higher an individual's insurance cost could be if certain characteristics were different.
 
 ## Hypothesis
-
+We hypothesize that having a higher BMI, children count, age, and being a smoker will heighten the charges that an individual will have to pay the most, as there are a higher amount of risks that need to be accounted for.
 
 ## Model 1:
 
