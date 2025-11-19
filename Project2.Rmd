@@ -5,6 +5,8 @@ date: "2025-12-12"
 output:
   pdf_document:
     number_sections: true
+editor_options: 
+  chunk_output_type: console
 ---
 ```{r echo=FALSE, include=FALSE, message=FALSE}
 # all library load statements here
@@ -149,7 +151,28 @@ Our dataset contains descriptive information about each person as well as the to
 We hypothesize that having a higher BMI, children count, age, and being a smoker will heighten the charges that an individual will have to pay the most, as there are a higher amount of risks that need to be accounted for.
 
 ## Model 1:
+We fit a linear regression step-wise model using all of the characteristics as predictor variables, those being age, sex, bmi, children, smoker, and region, and the insurance cost as the dependent variable. After putting our original model into the step wise function, we were able to remove the sex predictor to increase the simplicity of our model without taking away how much variation it explains. The fits results are displayed below
 
+```{r echo = false}
+fit1 <- lm(charges ~ age + sex + bmi + children + smoker + region, data = data.df)
+fit.step <- step(fit1, trace = 0)
+coef.vals <- coef(summary(fit.step))
+kable(coef.vals)
+```
+
+We can see that of the predictor variables, age, bmi, children, and yes to being a smoker are all highly significant, with different regions being slightly significant but not by much. With all of our predictors, the adjusted R squared value came to 0.7505, meaning that just over 75% of the variation in the data can be explained by the predictors included in our model. 
+
+We can use a histogram and a QQ plot to show the distribution of our residuals, which measure our fit's errors.
+```{r echo=FALSE, out.width="60%", out.height="40%", fig.align = 'center', fig.cap="Distribution of Residuals: Model 1."}
+par(mfrow=c(1,2))
+hist(fit1$residuals, freq = FALSE, main = "", xlab = "Residuals") 
+lines(density(fit1$residuals))
+
+qqnorm(y=fit1$residuals, main = "")
+qqline(y=fit1$residuals, datax = FALSE)
+```
+
+We can see a slightly normal distribution of residuals around 0, with our density curve showing some weight to the left and right of 0. We can also see that the histogram has a heavy tail to the right of our center mass. This same pattern is able to be seen in the QQ plot, as to the left and right of 0, our residuals stray off of the line of normality, with a tail straying far off on the far right.
 
 ## Model 2: 
 
