@@ -12,6 +12,8 @@ editor_options:
 # all library load statements here
 library(caret)
 library(knitr)
+library(xgboost)
+library(rattle)
 r.version <- "4.3.2"
 seed.val <- 123456
 ```
@@ -176,6 +178,10 @@ We can see a slightly normal distribution of residuals around 0, with our densit
 
 ## Model 2: 
 
+```{r echo = false}
+fit2 <- train(charges~.,data = data.df,method="xgbTree",verbosity=0)
+summary(fit2)
+```
 
 # Predicting with Models 1 and 2
 
