@@ -186,7 +186,8 @@ We can see a slightly normal distribution of residuals around 0, with our densit
 
 ```{r echo = false}
 fit2 <- train(charges~.,data = data.df,method="xgbTree",verbosity=0)
-summary(fit2)
+pred.imp <- varImp(fit2)
+plot(pred.imp)
 ```
 
 
