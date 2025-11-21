@@ -18,11 +18,11 @@ r.version <- "4.3.2"
 seed.val <- 123456
 ```
 
-Note: Brief intro and your main question go in this space. You may edit the headings and outline as fits your analysis. 
+With many different financial concerns people need to worry about, health insurance is a major necessary expense that most consider worth having. With different groups of people being in different situations, what characteristics can best explain how much an individual will have to pay for health insurance best? In this analysis, we used a linear regression model and a random forest tree model to analyse data from expense information to better understand the effects of different characteristics on the charges of health insurance.
 
 # Data Description and Processing
 
-This data set is frequently taken from publicly accessible health insurance expense information on individuals with health insurance.
+This data set (1) is frequently taken from publicly accessible health insurance expense information on individuals with health insurance.
 
 This data set contains descriptions of the individuals as well as how much they are charged for their insurance.\
 Outcomes: \
@@ -146,21 +146,26 @@ t.test(log(charges)~smoker, data = data.df)
 ```
 
 # Modeling the effect of Characteristics on Insurance Costs
+
 What will the impacts on insurance charges be based of an individuals characteristics?
 Our dataset contains descriptive information about each person as well as the total cost they are charged for their health insurance. The variables are both personal characteristics and personal choices that may influence certain health risks. Some variables capture biological factors such as age or an individual's body mass index, while others describe behaviors or circumstances, like whether the individual smokes or the number of children that an individual has, that could potentially increase or decrease expected medical costs. Understanding how each factor relates to charges can help show how much lower or higher an individual's insurance cost could be if certain characteristics were different.
 
 ## Hypothesis
+
 We hypothesize that having a higher BMI, children count, age, and being a smoker will heighten the charges that an individual will have to pay the most, as there are a higher amount of risks that need to be accounted for.
 
 ## Model 1:
+
 We fit a linear regression step-wise model using all of the characteristics as predictor variables, those being age, sex, bmi, children, smoker, and region, and the insurance cost as the dependent variable. After putting our original model into the step wise function, we were able to remove the sex predictor to increase the simplicity of our model without taking away how much variation it explains. The fits results are displayed below
 
-```{r echo = false}
+```{r echo = FALSE}
 fit1 <- lm(charges ~ age + sex + bmi + children + smoker + region, data = data.df)
 fit.step <- step(fit1, trace = 0)
 coef.vals <- coef(summary(fit.step))
 kable(coef.vals)
 ```
+
+\newpage
 
 We can see that of the predictor variables, age, bmi, children, and yes to being a smoker are all highly significant, with different regions being slightly significant but not by much. With all of our predictors, the adjusted R squared value came to 0.7506, meaning that just over 75% of the variation in the data can be explained by the predictors included in our model. 
 
@@ -178,13 +183,19 @@ We can see a slightly normal distribution of residuals around 0, with our densit
 
 ## Model 2: 
 
+
 ```{r echo = false}
 fit2 <- train(charges~.,data = data.df,method="xgbTree",verbosity=0)
 summary(fit2)
 ```
 
-# Predicting with Models 1 and 2
 
+# Predicting with Models 1 and 2
+ndsjkfjnsdjlf
 
 # Summary and Conclusions
 
+
+# Refrences 
+
+1: https://www.kaggle.com/datasets/nalisha/health-insurance-charges-dataset
