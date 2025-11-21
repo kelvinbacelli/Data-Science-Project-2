@@ -6,7 +6,7 @@ output:
   pdf_document:
     number_sections: true
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 ```{r echo=FALSE, include=FALSE, message=FALSE}
 # all library load statements here
@@ -183,13 +183,43 @@ We can see a slightly normal distribution of residuals around 0, with our densit
 
 ## Model 2: 
 
+For our second model, we fit a boosted tree which works by building many small decision trees, where each tree attempts to correct the errors of the previous ones. This allows the model to capture non-linear patterns in the data that a linear model cannot.
 
+We trained the boosted tree using all predictor variables and printed out the data summary for the best model. As depicted, the R squared value came out to be ~0.88 meaning that this model can explain a much larger percentage (88%) of the data than the linear model.
 ```{r echo = false}
 fit2 <- train(charges~.,data = data.df,method="xgbTree",verbosity=0)
-pred.imp <- varImp(fit2)
-plot(pred.imp)
+pred2 <- predict(fit2, newdata = data.df)
+postResample(pred2, obs = data.df$charges)
 ```
 
+Here, we examined which predictor variables contributed most to the performance of the boosted tree model. We can see that the variables smoker, BMI, and age are the most important factors attributed to health insurance cost and that other factors like sex and certain regions are not very important. Overall, this aligns with our findings in model 1. 
+
+
+```{r echo = false}
+fit2.imp <- varImp(fit2)
+plot(fit2.imp)
+```
+
+We can analyze the errors made by the boosted tree model by examining the residuals between the predicted and actual charges.
+
+Unlike the residuals of model 1 (which were approximately normally distributed), the residuals of the boosted tree model are not normally distributed. However, this is not a problem as boosted trees do not assume normality of residuals so this is an expected and acceptable outcome.
+
+```{r echo = false}
+pred <- predict(fit2, newdata = data.df)
+
+# Residuals
+res <- data.df$charges - pred
+
+# Histogram
+hist(res, main="Residual Distribution", xlab="Residuals")
+
+# QQ plot
+qqnorm(res)
+qqline(res)
+```
+
+
+Overall, the boosted tree model provided a noticeably stronger fit than the stepwise linear regression model (as indicated by the much higher R squared value). Despite this, the general trends identified by model 1 remain consistent and show that factors like smoker status, BMI, and age are the most influential predictors of health insurance cost.
 
 # Predicting with Models 1 and 2
 ndsjkfjnsdjlfhjbj
