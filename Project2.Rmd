@@ -222,7 +222,51 @@ qqline(res)
 Overall, the boosted tree model provided a noticeably stronger fit than the stepwise linear regression model (as indicated by the much higher R squared value). Despite this, the general trends identified by model 1 remain consistent and show that factors like smoker status, BMI, and age are the most influential predictors of health insurance cost.
 
 # Predicting with Models 1 and 2
-ndsjkfjnsdjlfhjbj
+
+Now that we have two distinct models, we can work with both of them to see which one is a better predictor of health insurance cost given data. We can use a 10-fold cross validation to do this, separating 80% of the data to use for training, and the other 20% for testing on each fold.
+
+```{r echo=FALSE}
+train.control <- trainControl(method = "cv", number = 10, p = 0.80) 
+RNGversion(r.version)
+set.seed(seed.val)
+
+fit1.train <- train(charges ~ age + sex + bmi + children + smoker + region, data = data.df, method = "lm", trControl = train.control)
+
+fit2.train <- train(charges~.,data = data.df,method="xgbTree",verbosity=0,trControl=train.control)
+
+```
+
+
+```{r echo=FALSE, out.width="60%", out.height="40%", fig.align = 'center', fig.cap="RMSE Over 10 Folds."}
+num.folds <- 10
+rmse.fit1 <- fit1.train$resample$RMSE
+rmse.fit2 <- fit2.train$resample$RMSE
+
+plot(
+  rmse.fit1, type = "b",
+  xlab = "Fold", ylab = "RMSE",
+  col = "blue",
+  ylim = c(min(c(rmse.fit1, rmse.fit2)),
+           max(c(rmse.fit1, rmse.fit2)))
+)
+
+lines(rmse.fit2, type = "b", col = "red", lty = 2)
+legend("topright", legend=c("Model 1 (Linear)", "Model 2 (Boosted Tree)"),
+       col=c("blue", "red"), lty=c(1,2))
+```
+
+
+We can now calculate the average root mean squared error (RMSE) for both of our models' predictions of the 10 folds. The results are below.
+
+```{r echo=FALSE}
+label <- c("Model 1", "Model 2")
+avg.fit1 <- round(mean(rmse.fit1), 2)
+avg.fit2 <- round(mean(rmse.fit2), 2)
+rmse <- c(avg.fit1, avg.fit2)
+
+results.tbl <- cbind(label, rmse)
+kable(results.tbl, caption="Mean RMSE for Models 1 and 2.")
+```
 
 # Summary and Conclusions
 
