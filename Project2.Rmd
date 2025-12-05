@@ -187,7 +187,7 @@ For our second model, we fit a boosted tree which works by building many small d
 
 We trained the boosted tree using all predictor variables and printed out the data summary for the best model. As depicted, the R squared value came out to be ~0.88 meaning that this model can explain a much larger percentage (88%) of the data than the linear model.
 ```{r echo = false}
-fit2 <- train(charges~.,data = data.df,method="xgbTree",verbosity=0)
+fit2 <- train( charges~.,data = data.df,method="xgbTree",verbosity=0)
 pred2 <- predict(fit2, newdata = data.df)
 postResample(pred2, obs = data.df$charges)
 ```
@@ -269,6 +269,12 @@ kable(results.tbl, caption="Mean RMSE for Models 1 and 2.")
 ```
 
 # Summary and Conclusions
+
+We can see that both our linear regression model and our boosted tree model fit the data relatively well, and both showed strong, positive, and significant relationships between insurance cost and the predictors age, BMI, number of children, and smoking status, which fits with what we hypothesized.
+
+With a higher R-squared value of around 0.88 and a lower average RMSE in the 10-fold cross-validation, we found that our second model, the boosted tree model, was overall the better-fitting model. Model 2 also aligned closely with Model 1 in identifying the most influential predictors of insurance cost, particularly smoking status, BMI, and age.
+
+We recognize that even with improved predictive performance, many external factors likely contribute to the remaining unexplained variability in insurance charges, such as pre-existing health conditions or their occupations, which were not included in our dataset. Based on the variables we had access to, we conclude that clear factors, such as higher age, higher BMI, having more children, and especially being a smoker, increase the amount individuals pay for health insurance, while region does not have much of a role in predicting cost.
 
 
 # Refrences 
