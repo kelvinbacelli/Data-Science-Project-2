@@ -187,7 +187,7 @@ For our second model, we fit a boosted tree which works by building many small d
 
 We trained the boosted tree using all predictor variables and printed out the data summary for the best model. As depicted, the R squared value came out to be ~0.88 meaning that this model can explain a much larger percentage (88%) of the data than the linear model.
 ```{r echo = false}
-fit2 <- train( charges~.,data = data.df,method="xgbTree",verbosity=0)
+fit2 <- train(charges~.,data = data.df,method="xgbTree",verbosity=0)
 pred2 <- predict(fit2, newdata = data.df)
 postResample(pred2, obs = data.df$charges)
 ```
